@@ -14,6 +14,17 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Normalize incoming URLs: some serverless platforms pass the full
+// path including the `/api` prefix (e.g. `/api/room/all`). Strip that
+// prefix so mounted routes like `/room` match correctly.
+app.use((req, res, next) => {
+  if (req.url && req.url.indexOf('/api/') === 0) {
+    req.url = req.url.replace(/^\/api/, '');
+    if (req.originalUrl) req.originalUrl = req.originalUrl.replace(/^\/api/, '');
+  }
+  next();
+});
+
 app.use('/auth', authRoutes);
 app.use('/payment', paymentRoutes);
 app.use('/booking', bookingRoutes);
