@@ -6,10 +6,25 @@ let dorms = [];
 // Fetch all room data from API
 async function loadDorms() {
   try {
-    const response = await fetch(`${API_URL}/room/all`);
-    const data = await response.json();
-    if (data.success) {
+    const response = await fetch(`${API_URL}/room/all`, { redirect: 'follow' });
+    // If API responds with non-JSON or redirects (SSO), fallback to static file
+    let data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      data = null;
+    }
+
+    if (data && data.success) {
       dorms = data.rooms;
+      return dorms;
+    }
+
+    // Fallback to static rooms.json bundled in /public
+    const fallbackResp = await fetch('/rooms.json');
+    const fallback = await fallbackResp.json();
+    if (fallback && fallback.success && Array.isArray(fallback.rooms)) {
+      dorms = fallback.rooms;
       return dorms;
     }
   } catch (error) {
