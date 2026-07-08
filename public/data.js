@@ -52,3 +52,15 @@ function getRoomData(roomId){
 function getUpdatedDorms(){
   return dorms;
 }
+
+// Default amenities data for room details and admin UI
+function getAmenities(){
+  return [
+    { title: '24/7 Security', description: 'Secure property with CCTV and gated access.' },
+    { title: 'High-Speed Wi-Fi', description: 'Reliable internet in all rooms and common areas.' },
+    { title: 'Shared Kitchen', description: 'Fully equipped kitchen available for residents.' },
+    { title: 'Laundry Facilities', description: 'On-site laundry machines for resident use.' },
+    { title: 'Cleaning Service', description: 'Regular cleaning service for shared spaces.' },
+    { title: 'Study Lounge', description: 'Quiet study area for students and remote work.' }
+  ];
+}
