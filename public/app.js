@@ -8,16 +8,33 @@ window.onload=async ()=>{
 };
 
 async function applyHomePageSettings(){
-  const settings = await loadHomePageSettings();
+  const defaultSettings = {
+    title: '우리 방에 오신 것을 환영합니다',
+    backgroundColor: '#ffffff',
+    backgroundPosition: 'center'
+  };
+
+  let settings = defaultSettings;
+  if (typeof loadHomePageSettings === 'function') {
+    try {
+      const loaded = await loadHomePageSettings();
+      if (loaded && typeof loaded === 'object') {
+        settings = { ...defaultSettings, ...loaded };
+      }
+    } catch (error) {
+      console.error('loadHomePageSettings failed:', error);
+    }
+  }
+
   const hero = document.getElementById('hero');
   const title = document.getElementById('hero-title');
 
-  if(title){
-    title.textContent = settings.title || 'Find Your Perfect Dorm';
+  if (title && settings.title) {
+    title.innerText = settings.title;
   }
 
-  if(hero){
-    if(settings.backgroundImage){
+  if (hero) {
+    if (settings.backgroundImage) {
       hero.style.background = `linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('${settings.backgroundImage}') no-repeat ${settings.backgroundPosition || 'center'}`;
       hero.style.backgroundSize = 'cover';
       hero.style.color = '#fff';
